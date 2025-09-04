@@ -1,0 +1,35 @@
+filebeat.inputs:
+- close_inactive: 5m
+  enabled: true
+  fields:
+    integration_tool: filebeat_kismet_integrator
+    kismet_version: forgedfate
+    log_type: kismet_kismetdb
+    source_device: dragonos-laptop
+  fields_under_root: true
+  id: kismet-kismetdb
+  index: kismet-kismetdb
+  parsers:
+  - ndjson:
+      target: ''
+  paths:
+  - /home/bc_test/Downloads/ForgedFate/forgedfate/kismet/Kismet-*.kismet
+  scan_frequency: 10s
+  type: filestream
+logging.files:
+  keepfiles: 7
+  name: filebeat
+  path: /var/log/filebeat
+  permissions: '0644'
+logging.level: info
+logging.to_files: true
+output.elasticsearch:
+  hosts:
+  - https://172.18.18.20:9200
+  password: KUX4hkxjwp9qhu2wjx
+  ssl.certificate_authorities: []
+  ssl.verification_mode: none
+  username: filebeat-dragonos
+setup.template.settings:
+  index.number_of_replicas: 0
+  index.number_of_shards: 1

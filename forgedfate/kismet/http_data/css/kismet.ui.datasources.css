@@ -1,0 +1,216 @@
+:root {
+    --devices-modal-background-color: rgba(0,0,0,0.4);
+    --devices-modal-content-color: #fefefe;
+}
+
+[data-theme="dark"] {
+    --devices-modal-content-color: #BBB;
+}
+
+div.k-cc-main {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    right: 5px;
+    overflow-y: hidden !important;
+}
+
+div.k-cc-canvas {
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden !important;
+}
+
+canvas.k-cc-canvas {
+    overflow-y: hidden !important;
+}
+
+div.k-ds-tablediv {
+    overflow-y: hidden;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    right: 5px;
+}
+
+i.k-ds-warning {
+    color: yellow;
+}
+
+i.k-ds-error {
+    color: red;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+i.k-ds-paused {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+div.k-ds-details {
+    padding: 10px;
+}
+
+div.k-ds-accordion {
+    padding: 5px;
+}
+
+/* Manual source addition styles */
+.k-ds-manual-form {
+    padding: 15px !important;
+    min-height: 200px !important;
+}
+
+.k-ds-manual-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.k-ds-manual-form input[type="text"] {
+    width: 100% !important;
+    padding: 8px !important;
+    margin: 5px 0 10px 0 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    font-family: monospace !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+}
+
+.k-ds-examples {
+    background: #f8f9fa !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 4px !important;
+    padding: 10px !important;
+    margin: 10px 0 !important;
+    font-size: 0.9em !important;
+    line-height: 1.4 !important;
+}
+
+.k-ds-examples code {
+    background: #e9ecef !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    font-family: monospace !important;
+    font-size: 0.9em !important;
+}
+
+.k-ds-manual-button {
+    background: #28a745 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    margin-top: 10px !important;
+}
+
+.k-ds-manual-button:hover {
+    background: #218838 !important;
+}
+
+.k-ds-manual-button:disabled {
+    background: #6c757d !important;
+    cursor: not-allowed !important;
+}
+
+/* Ensure accordion content is visible */
+#ds_manual_source .ui-accordion-content {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+#ds_manual_source.ui-accordion .ui-accordion-content {
+    padding: 1em 2.2em !important;
+}
+
+span.k-ds-source {
+    padding-left: 5px;
+    display: inline-block;
+    width: 20%;
+    min-width: 200px;
+}
+
+span.k-ds-rrd {
+}
+
+div.k-ds-content {
+    padding: 5px;
+}
+
+div.k-ds-modal {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--devices-modal-background-color);
+}
+
+.k-ds-modal-content {
+    background-color: var(--devices-modal-content-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+div.k-ds-contentdiv {
+    overflow-y: auto;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    right: 5px;
+}
+
+table.k-ds-table {
+    border: 0;
+}
+
+table.k-ds-table b {
+    padding-top: 0.5em;
+}
+
+table.k-ds-table td {
+    vertical-align: top;
+}
+
+table.k-ds-table tr td:nth-of-type(1) {
+    width: 20%;
+    max-width: 100px;
+}
+
+table.k-ds-table tr td:nth-of-type(2)  {
+    width: 100%;
+}
+
+/* System channel flag */
+.enable-chan-system {
+    background: orange !important;
+}
+
+/* User selected */
+.enable-chan-user {
+    background: orange !important;
+}
+
+/* User disabled */
+.disable-chan-user {
+
+}
+

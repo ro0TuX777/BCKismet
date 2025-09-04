@@ -1,0 +1,83 @@
+# Filebeat Configuration Template for Elasticsearch Integration
+# Copy this to /etc/filebeat/filebeat.yml and customize for your application
+
+filebeat.inputs:
+# Main application data input
+- close_inactive: 5m
+  enabled: true
+  fields:
+    integration_tool: filebeat_app_integrator
+    app_version: YOUR_APP_VERSION          # Replace with your app version
+    log_type: YOUR_APP_LOGTYPE            # Replace with your log type (e.g., myapp_db, myapp_logs)
+    source_device: YOUR_DEVICE_NAME       # Replace with your device identifier
+  fields_under_root: true
+  id: your-app-logs                       # Replace with unique ID
+  index: your-app-logs                    # Replace with your index name
+  parsers:
+  - ndjson:
+      target: ''
+  paths:
+  - /path/to/your/app/logs/*.log          # Replace with your log file paths
+  - /path/to/your/app/data/*.json         # Replace with your data file paths
+  - /path/to/your/app/database/*.db       # Replace with your database file paths (if converted to JSON)
+  scan_frequency: 10s
+  type: filestream
+
+# Optional: Additional input for different data types
+# - close_inactive: 5m
+#   enabled: true
+#   fields:
+#     integration_tool: filebeat_app_integrator
+#     app_version: YOUR_APP_VERSION
+#     log_type: YOUR_APP_SECONDARY_TYPE
+#     source_device: YOUR_DEVICE_NAME
+#   fields_under_root: true
+#   id: your-app-secondary
+#   index: your-app-secondary
+#   paths:
+#   - /path/to/secondary/data/*.log
+#   scan_frequency: 30s
+#   type: filestream
+
+# Elasticsearch output configuration
+output.elasticsearch:
+  hosts:
+  - https://172.18.18.20:9200             # Elasticsearch server
+  username: filebeat-dragonos             # Write-only user credentials
+  password: KUX4hkxjwp9qhu2wjx            # Write-only user password
+  ssl.certificate_authorities: []
+  ssl.verification_mode: none
+
+# Logging configuration
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: '0644'
+
+# Template settings for index management
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
+
+# Optional: Index lifecycle management
+# setup.ilm.enabled: true
+# setup.ilm.rollover_alias: "your-app-logs"
+# setup.ilm.pattern: "your-app-logs-*"
+# setup.ilm.policy: "your-app-policy"
+
+# Optional: Processors for data transformation
+# processors:
+# - add_host_metadata:
+#     when.not.contains.tags: forwarded
+# - add_docker_metadata: ~
+# - add_kubernetes_metadata: ~
+
+# Optional: Monitoring
+# monitoring.enabled: true
+# monitoring.elasticsearch:
+#   hosts: ["https://172.18.18.20:9200"]
+#   username: filebeat-dragonos
+#   password: KUX4hkxjwp9qhu2wjx

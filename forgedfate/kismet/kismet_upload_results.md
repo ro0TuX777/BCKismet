@@ -1,0 +1,3 @@
+2025-08-27 11:17:19,330 - INFO - 🚀 Starting ForgedFate Kismet Bulk Upload...
+2025-08-27 11:17:19,372 - INFO - GET https://172.18.18.20:9200/ [status:403 duration:0.009s]
+2025-08-27 11:17:19,372 - ERROR - Failed to connect to Elasticsearch: AuthorizationException(403, 'security_exception', 'action [cluster:monitor/main] is unauthorized for user [filebeat-dragonos] with effective roles [filebeat-kismet-writer], this action is granted by the cluster privileges [monitor,manage,all]')

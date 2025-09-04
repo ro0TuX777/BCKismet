@@ -1,0 +1,124 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.kismet
+*.kismetdb
+*.pcap
+*.pcapng
+
+# Configuration files with sensitive data
+config.json
+secrets.yml
+.env.local
+.env.production
+
+# Elasticsearch data
+data/
+elasticsearch/
+
+# Kismet specific
+kismet/*.o
+kismet/*.d
+kismet/kismet
+kismet/kismet_server
+kismet/log_tools/kismetdb_*
+kismet/tools/kismet_discovery
+kismet/capture_*/capture_*
+!kismet/capture_*/Makefile
+!kismet/capture_*/*.cc
+!kismet/capture_*/*.h
+
+# Compiled binaries
+*.exe
+*.out
+*.app
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Documentation build
+docs/_build/
+docs/build/
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Large data files
+*.gz
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Local development
+local/
+dev/
+sandbox/
