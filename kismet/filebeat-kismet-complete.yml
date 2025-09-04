@@ -1,0 +1,204 @@
+# Filebeat Configuration for Kismet (Elasticsearch 9.1.3)
+# Complete configuration for all Kismet log types including Bluetooth and WiFi
+
+filebeat.inputs:
+  # Kismet All Devices (General device detection)
+  - type: filestream
+    id: kismet-devices
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_devices
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet Bluetooth Devices
+  - type: filestream
+    id: kismet-bluetooth
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/bluetooth.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_bluetooth
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet WiFi Devices
+  - type: filestream
+    id: kismet-wifi
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/wifi.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_wifi
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet Packet Data
+  - type: filestream
+    id: kismet-packets
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/packets.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_packets
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet Alerts
+  - type: filestream
+    id: kismet-alerts
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/alerts.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_alerts
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet ADS-B Devices
+  - type: filestream
+    id: kismet-adsb
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/adsb.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_adsb
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet RTL433 Devices
+  - type: filestream
+    id: kismet-rtl433
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/rtl433.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_rtl433
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet Zigbee Devices
+  - type: filestream
+    id: kismet-zigbee
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/zigbee.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_zigbee
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet Radiation Devices
+  - type: filestream
+    id: kismet-radiation
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/radiation.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_radiation
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+  # Kismet UAV/Drone Devices
+  - type: filestream
+    id: kismet-uav
+    enabled: true
+    paths:
+      - /opt/kismet/logs/Kismet-*/uav.devices.json
+    parsers:
+      - ndjson:
+          target: ""
+    fields:
+      log_type: kismet_uav
+      source_device: dragonos-laptop
+      sdr_type: kismet_forgedfate
+      kismet_version: forgedfate
+    fields_under_root: true
+
+# Elasticsearch Output Configuration (9.1.3)
+output.elasticsearch:
+  hosts: ["https://172.18.18.20:9200"]
+  username: "filebeat-dragonos"
+  password: "KUX4hkxjwp9qhu2wjx"
+  index: "kismet-sdr"
+  ssl.verification_mode: none
+
+# Template settings for custom index
+setup.template.name: "kismet-sdr"
+setup.template.pattern: "kismet-sdr-*"
+setup.ilm.enabled: false
+
+# Logging Configuration
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# Performance and reliability settings
+queue.mem:
+  events: 4096
+  flush.min_events: 512
+  flush.timeout: 1s
+
+# Processors for additional data enrichment
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_docker_metadata: ~
+  - timestamp:
+      field: kismet.device.last_time
+      layouts:
+        - '2006-01-02T15:04:05.000Z'
+        - '2006-01-02T15:04:05Z'
+      test:
+        - '2023-07-15T14:30:45.123Z'

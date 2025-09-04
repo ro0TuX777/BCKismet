@@ -28,8 +28,23 @@ sudo python3 filebeat_integration.py \
 ## 📋 Prerequisites
 
 ### 1. Install Filebeat
+
+#### For Elasticsearch 9.1.3 (Recommended)
 ```bash
-# Download and install Filebeat
+# Use the automated setup script
+sudo ./setup_kismet_filebeat_9.1.3.sh
+```
+
+#### Manual Installation
+```bash
+# Download and install Filebeat 9.1.3
+curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-9.1.3-amd64.deb
+sudo dpkg -i filebeat-9.1.3-amd64.deb
+```
+
+#### Legacy Installation (Elasticsearch 8.x)
+```bash
+# Download and install Filebeat 8.14.0
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.14.0-amd64.deb
 sudo dpkg -i filebeat-8.14.0-amd64.deb
 ```
@@ -94,13 +109,23 @@ sudo python3 filebeat_integration.py \
 ## 📊 What Gets Created
 
 ### Elasticsearch Indices
-The integration creates separate indices for each log type:
+The integration creates comprehensive coverage for all Kismet log types:
 
-- `kismet-devices` - All detected devices
-- `kismet-bluetooth` - Bluetooth-specific devices  
-- `kismet-wifi` - WiFi devices and networks
+#### Core Log Types
+- `kismet-devices` - All detected devices (general)
+- `kismet-bluetooth` - Bluetooth devices and services
+- `kismet-wifi` - WiFi networks and clients
 - `kismet-packets` - Raw packet data
 - `kismet-alerts` - Security alerts and notifications
+
+#### Extended Protocol Support
+- `kismet-adsb` - Aircraft transponder data (ADS-B)
+- `kismet-rtl433` - ISM band devices (sensors, weather stations, etc.)
+- `kismet-zigbee` - Zigbee network devices
+- `kismet-radiation` - Radiation detection data
+- `kismet-uav` - UAV/Drone detection data
+
+**Note**: All data is indexed to a single index `kismet-sdr` with `log_type` field differentiation in the 9.1.3 configuration.
 
 ### Filebeat Configuration
 The tool generates a complete Filebeat configuration including:

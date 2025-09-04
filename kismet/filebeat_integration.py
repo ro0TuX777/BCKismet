@@ -27,7 +27,12 @@ class FilebeatKismetIntegrator:
             'bluetooth': 'Kismet-*/bluetooth.devices.json',
             'wifi': 'Kismet-*/wifi.devices.json',
             'packets': 'Kismet-*/packets.json',
-            'alerts': 'Kismet-*/alerts.json'
+            'alerts': 'Kismet-*/alerts.json',
+            'adsb': 'Kismet-*/adsb.devices.json',
+            'rtl433': 'Kismet-*/rtl433.devices.json',
+            'zigbee': 'Kismet-*/zigbee.devices.json',
+            'radiation': 'Kismet-*/radiation.devices.json',
+            'uav': 'Kismet-*/uav.devices.json'
         }
         
         found_logs = {}
@@ -52,19 +57,21 @@ class FilebeatKismetIntegrator:
             print("❌ No Kismet logs found. Make sure Kismet has been run and generated logs.")
             return None
         
-        # Base configuration
+        # Base configuration for Elasticsearch 9.1.3
         config = {
             'filebeat.inputs': [],
             'output.elasticsearch': {
                 'hosts': [elasticsearch_config['url']],
                 'username': elasticsearch_config.get('username', ''),
                 'password': elasticsearch_config.get('password', ''),
+                'index': elasticsearch_config.get('index_prefix', 'kismet-sdr'),
                 'ssl.verification_mode': elasticsearch_config.get('ssl_verify', 'none')
             },
             'setup.template.settings': {
                 'index.number_of_shards': 1,
                 'index.number_of_replicas': 0
             },
+            'setup.ilm.enabled': False,  # Disable ILM as requested
             'logging.level': 'info',
             'logging.to_files': True,
             'logging.files': {
@@ -79,13 +86,14 @@ class FilebeatKismetIntegrator:
         for log_type, log_info in logs.items():
             input_config = {
                 'type': 'filestream',
-                'id': f'kismet-{log_type}',
+                'id': f'kismet-{log_type}',  # Ensure unique ID
                 'enabled': True,
                 'paths': [log_info['pattern']],
                 'parsers': [{'ndjson': {'target': ''}}],
                 'fields': {
                     'log_type': f'kismet_{log_type}',
                     'source_device': device_name,
+                    'sdr_type': 'kismet_forgedfate',
                     'kismet_version': 'forgedfate',
                     'integration_tool': 'filebeat_kismet_integrator'
                 },
@@ -93,13 +101,7 @@ class FilebeatKismetIntegrator:
                 'close_inactive': '5m',
                 'scan_frequency': '10s'
             }
-            
-            # Set index pattern based on log type
-            if 'index_prefix' in elasticsearch_config:
-                input_config['index'] = f"{elasticsearch_config['index_prefix']}-{log_type}"
-            else:
-                input_config['index'] = f"kismet-{log_type}"
-            
+
             config['filebeat.inputs'].append(input_config)
         
         return config
@@ -244,7 +246,7 @@ def main():
     parser.add_argument('--password', help='Elasticsearch password')
     parser.add_argument('--device-name', default='forgedfate-device',
                        help='Device name for log identification')
-    parser.add_argument('--index-prefix', default='kismet',
+    parser.add_argument('--index-prefix', default='kismet-sdr',
                        help='Index prefix for Elasticsearch indices')
     parser.add_argument('--ssl-verify', default='none', choices=['none', 'certificate'],
                        help='SSL verification mode')

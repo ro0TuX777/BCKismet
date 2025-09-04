@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-FILEBEAT_VERSION="8.14.0"
+FILEBEAT_VERSION="9.1.3"
 FILEBEAT_DEB="filebeat-${FILEBEAT_VERSION}-amd64.deb"
 FILEBEAT_URL="https://artifacts.elastic.co/downloads/beats/filebeat/${FILEBEAT_DEB}"
 
