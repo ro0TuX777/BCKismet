@@ -1412,6 +1412,9 @@ function downloadFilebeatScript() {
     document.body.removeChild(a);
 }
 
+// We're done loading
+exports.load_complete = 1;
+
 /* Add the API sidebar item */
 kismet_ui_sidebar.AddSidebarItem({
     id: 'sidebar-api',
@@ -1421,9 +1424,6 @@ kismet_ui_sidebar.AddSidebarItem({
         exports.ShowAPI();
     }
 });
-
-// We're done loading
-exports.load_complete = 1;
 
 return exports;
 
