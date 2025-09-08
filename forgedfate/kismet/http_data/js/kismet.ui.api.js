@@ -41,20 +41,14 @@ var export_configs = {
         server_host: 'localhost',
         server_port: 8685,
         data_format: 'json',
-        update_rate: 5,
-        username: '',
-        password: '',
-        index_prefix: 'kismet'
+        update_rate: 5
     },
     udp: {
         enabled: false,
         server_host: 'localhost',
         server_port: 8685,
         data_format: 'json',
-        update_rate: 5,
-        username: '',
-        password: '',
-        index_prefix: 'kismet'
+        update_rate: 5
     },
     elasticsearch: {
         enabled: false,
@@ -62,8 +56,7 @@ var export_configs = {
         username: '',
         password: '',
         index_prefix: 'kismet',
-        offline_mode: false,
-        bulk_upload_enabled: false
+        offline_mode: false
     },
     mqtt: {
         enabled: false,
@@ -72,35 +65,6 @@ var export_configs = {
         topic_prefix: 'kismet',
         username: '',
         password: ''
-    }
-};
-
-// Export status tracking
-var export_status = {
-    elasticsearch: {
-        active: false,
-        last_export: null,
-        documents_sent: 0,
-        errors: 0,
-        last_error: null
-    },
-    tcp: {
-        active: false,
-        last_export: null,
-        documents_sent: 0,
-        errors: 0
-    },
-    udp: {
-        active: false,
-        last_export: null,
-        documents_sent: 0,
-        errors: 0
-    },
-    mqtt: {
-        active: false,
-        last_export: null,
-        documents_sent: 0,
-        errors: 0
     }
 };
 
@@ -120,7 +84,7 @@ function saveConfigs() {
 // Generate command line for export type
 function generateCommand(export_type) {
     var config = export_configs[export_type];
-    var cmd = 'python3 kismet_realtime_export.py';
+    var cmd = 'python kismet_realtime_export.py';
     
     switch(export_type) {
         case 'tcp':
@@ -133,22 +97,12 @@ function generateCommand(export_type) {
             break;
             
         case 'elasticsearch':
-            if (config.bulk_upload_enabled) {
-                cmd = 'python3 kismet_bulk_upload.py';
-                cmd += ` --es-hosts "${config.hosts}"`;
-                if (config.username) cmd += ` --es-username ${config.username}`;
-                if (config.password) cmd += ` --es-password ${config.password}`;
-                cmd += ` --index-prefix ${config.index_prefix}`;
-                cmd += ` --device-name dragon-os-box`;
-                cmd += ` --log-directory .`;
-            } else {
-                cmd = 'python3 kismet_elasticsearch_export.py';
-                cmd += ` --es-hosts "${config.hosts}"`;
-                if (config.username) cmd += ` --es-username ${config.username}`;
-                if (config.password) cmd += ` --es-password ${config.password}`;
-                cmd += ` --index-prefix ${config.index_prefix}`;
-                if (config.offline_mode) cmd += ' --offline';
-            }
+            cmd = 'python kismet_elasticsearch_export.py';
+            cmd += ` --es-hosts "${config.hosts}"`;
+            if (config.username) cmd += ` --es-username ${config.username}`;
+            if (config.password) cmd += ` --es-password ${config.password}`;
+            cmd += ` --index-prefix ${config.index_prefix}`;
+            if (config.offline_mode) cmd += ' --offline';
             break;
             
         case 'mqtt':
@@ -239,25 +193,6 @@ function createExportPanel(export_type, container) {
             saveConfigs();
             updateCommandDisplay(export_type);
         }, 'How often to send data updates (1-3600 seconds)'));
-
-        // Add authentication fields for TCP/UDP
-        form.append(createFormField('Username', 'text', config.username, function(val) {
-            config.username = val;
-            saveConfigs();
-            updateCommandDisplay(export_type);
-        }, 'Username for authentication (optional)'));
-
-        form.append(createFormField('Password', 'password', config.password, function(val) {
-            config.password = val;
-            saveConfigs();
-            updateCommandDisplay(export_type);
-        }, 'Password for authentication (optional)'));
-
-        form.append(createFormField('Index Prefix', 'text', config.index_prefix, function(val) {
-            config.index_prefix = val;
-            saveConfigs();
-            updateCommandDisplay(export_type);
-        }, 'Prefix for data organization (e.g., kismet, network-scan)'));
     }
     
     if (export_type === 'elasticsearch') {
@@ -299,25 +234,7 @@ function createExportPanel(export_type, container) {
                     updateCommandDisplay(export_type);
                 })
             )
-            .append(' <span style="color: black;">Offline Mode</span>')
-        );
-
-        // Add bulk upload option
-        form.append(
-            $('<label>')
-            .append(
-                $('<input>', {
-                    type: 'checkbox',
-                    checked: config.bulk_upload_enabled
-                })
-                .on('change', function() {
-                    config.bulk_upload_enabled = $(this).is(':checked');
-                    saveConfigs();
-                    updateCommandDisplay(export_type);
-                    updateBulkUploadUI(export_type);
-                })
-            )
-            .append(' <span style="color: black;">Enable Bulk Upload Mode</span>')
+            .append(' Offline Mode')
         );
     }
     
@@ -678,8 +595,9 @@ exports.ShowAPI = function() {
             $('<ol>')
             .html('<li>Choose an export type and enable it using the toggle switch</li>' +
                   '<li>Configure the connection settings (host, port, credentials)</li>' +
+                  '<li>Click "Test Connection" to verify your configuration</li>' +
                   '<li>Copy the generated command and run it in your terminal</li>' +
-                  '<li>Monitor export status in the Data Sources page</li>')
+                  '<li>Use "Start Monitoring" to track connection health in real-time</li>')
         )
     );
 
@@ -744,7 +662,7 @@ function createConnectivityTestPanel(export_type) {
     })
     .append(
         $('<h4>')
-        .html('<i class="fa fa-info-circle"></i> Export Status')
+        .html('<i class="fa fa-wifi"></i> Connection Test')
     );
 
     var statusContainer = $('<div>', {
@@ -756,12 +674,23 @@ function createConnectivityTestPanel(export_type) {
             class: 'k-api-status-indicator',
             id: `status-indicator-${export_type}`
         })
-        .html('<i class="fa fa-info-circle"></i> Configure export settings and enable to start')
+        .html('<i class="fa fa-question-circle"></i> Not tested')
     );
+
+    var testButton = $('<button>', {
+        class: 'k-api-test-btn',
+        id: `test-btn-${export_type}`
+    })
+    .html('<i class="fa fa-play"></i> Test Connection')
+    .on('click', function() {
+        testConnectivity(export_type);
+    });
 
     var buttonContainer = $('<div>', {
         class: 'k-api-button-container'
     });
+
+    buttonContainer.append(testButton);
 
     // Add Filebeat integration button for Elasticsearch
     if (export_type === 'elasticsearch') {
@@ -783,84 +712,14 @@ function createConnectivityTestPanel(export_type) {
         style: 'display: none;'
     });
 
-    // Add export status indicator
-    var exportStatusContainer = $('<div>', {
-        class: 'k-api-export-status',
-        id: `export-status-${export_type}`
-    })
-    .append(
-        $('<h5>')
-        .html('<i class="fa fa-upload"></i> Export Status')
-    )
-    .append(
-        $('<div>', {
-            class: 'k-api-export-indicator',
-            id: `export-indicator-${export_type}`
-        })
-        .html('<i class="fa fa-circle-o"></i> Export disabled')
-    )
-    .append(
-        $('<div>', {
-            class: 'k-api-export-stats',
-            id: `export-stats-${export_type}`,
-            style: 'display: none;'
-        })
-    );
-
     panel.append(statusContainer);
     panel.append(buttonContainer);
     panel.append(resultsContainer);
-    panel.append(exportStatusContainer);
 
     return panel;
 }
 
-function updateExportStatus(export_type, active, stats = {}) {
-    var exportIndicator = $(`#export-indicator-${export_type}`);
-    var exportStats = $(`#export-stats-${export_type}`);
-
-    export_status[export_type].active = active;
-
-    if (active) {
-        exportIndicator.html('<i class="fa fa-circle text-success"></i> Export active')
-            .removeClass('text-warning text-danger')
-            .addClass('text-success');
-
-        if (stats.documents_sent !== undefined) {
-            export_status[export_type].documents_sent = stats.documents_sent;
-            export_status[export_type].last_export = new Date();
-        }
-
-        if (stats.errors !== undefined) {
-            export_status[export_type].errors = stats.errors;
-        }
-
-        // Show statistics
-        var statsHtml = `
-            <small>
-                <div>Documents sent: ${export_status[export_type].documents_sent}</div>
-                <div>Last export: ${export_status[export_type].last_export ? export_status[export_type].last_export.toLocaleTimeString() : 'Never'}</div>
-                ${export_status[export_type].errors > 0 ? `<div class="text-warning">Errors: ${export_status[export_type].errors}</div>` : ''}
-            </small>
-        `;
-        exportStats.html(statsHtml).show();
-    } else {
-        exportIndicator.html('<i class="fa fa-circle-o"></i> Export disabled')
-            .removeClass('text-success text-warning')
-            .addClass('text-muted');
-        exportStats.hide();
-    }
-}
-
-// Test connectivity function disabled - write-only users cannot test connections
-// Export status is shown in Data Sources page instead
 function testConnectivity(export_type) {
-    // Disabled: Connection tests don't work with write-only Elasticsearch users
-    var statusIndicator = $(`#status-indicator-${export_type}`);
-    statusIndicator.html('<i class="fa fa-info-circle"></i> Connection tests disabled for write-only users. Check Data Sources page for export status.');
-    return;
-
-    /* ORIGINAL CODE COMMENTED OUT
     var config = export_configs[export_type];
     var testBtn = $(`#test-btn-${export_type}`);
     var statusIndicator = $(`#status-indicator-${export_type}`);
@@ -945,24 +804,12 @@ function displayTestResults(export_type, results) {
         case 'success':
             statusClass = 'k-api-status-success';
             statusIcon = 'fa-check-circle';
-            // Special handling for Elasticsearch write-only users
-            if (export_type === 'elasticsearch' && results.details && results.details.user_type === 'write_only') {
-                statusText = 'Connection successful (write-only user)';
-            } else {
-                statusText = 'Connection successful';
-            }
+            statusText = 'Connection successful';
             break;
         case 'warning':
             statusClass = 'k-api-status-warning';
             statusIcon = 'fa-exclamation-triangle';
-            // For Elasticsearch, warnings about 403 are actually good news
-            if (export_type === 'elasticsearch' && results.details && results.details.elasticsearch_auth === 'success') {
-                statusClass = 'k-api-status-success';
-                statusIcon = 'fa-check-circle';
-                statusText = 'Connection successful (write-only access confirmed)';
-            } else {
-                statusText = 'Connection warning';
-            }
+            statusText = 'Connection warning';
             break;
         case 'error':
         case 'timeout':
@@ -1173,7 +1020,7 @@ function addMonitoringControls(container) {
     )
     .append(
         $('<p>')
-        .html('Monitor export status in the Data Sources page. Connection testing is disabled for write-only users.')
+        .html('Automatically test connections every 30 seconds for enabled exports.')
     );
 
     var controlsDiv = $('<div>', {
@@ -1385,27 +1232,6 @@ function displayDiagnosticReport(report) {
     $('#diagnostic-report .jsPanel-content').html(html);
 }
 
-function updateBulkUploadUI(export_type) {
-    if (export_type === 'elasticsearch') {
-        var config = export_configs[export_type];
-        var commandDisplay = $(`#command-display-${export_type}`);
-
-        if (config.bulk_upload_enabled) {
-            commandDisplay.addClass('k-api-bulk-mode');
-            // Add bulk upload help text
-            var helpText = $('<div class="k-api-bulk-help">').html(
-                '<i class="fa fa-info-circle"></i> <strong>Bulk Upload Mode:</strong> ' +
-                'This will upload ALL existing Kismet log files (.kismet, .json) to Elasticsearch. ' +
-                'Perfect for uploading data collected offline.'
-            );
-            commandDisplay.after(helpText);
-        } else {
-            commandDisplay.removeClass('k-api-bulk-mode');
-            commandDisplay.siblings('.k-api-bulk-help').remove();
-        }
-    }
-}
-
 function exportDiagnosticReport() {
     // Create a downloadable text version of the report
     var reportText = "KISMET CONNECTIVITY DIAGNOSTIC REPORT\n";
@@ -1483,8 +1309,8 @@ function showFilebeatIntegrationDialog() {
 
                 <div class="k-api-form-field">
                     <label>Device Name:</label>
-                    <input type="text" id="filebeat-device" value="dragon-os-box"
-                           placeholder="dragon-os-box">
+                    <input type="text" id="filebeat-device" value="forgedfate-device"
+                           placeholder="forgedfate-device">
                 </div>
 
                 <div class="k-api-form-field">
@@ -1508,7 +1334,7 @@ function showFilebeatIntegrationDialog() {
             <div class="k-api-filebeat-command">
                 <h4><i class="fa fa-terminal"></i> Command to run:</h4>
                 <div class="k-api-command-display" id="filebeat-command">
-                    <code>sudo python3 filebeat_integration.py --elasticsearch-url "https://your-elasticsearch:9200" --username "your-username" --password "your-password" --device-name "dragon-os-box"</code>
+                    <code>sudo python3 /path/to/kismet/filebeat_integration.py --elasticsearch-url "https://your-elasticsearch:9200" --username "your-username" --password "your-password" --device-name "forgedfate-device"</code>
                 </div>
                 <button class="k-api-copy-btn" onclick="copyFilebeatCommand()">
                     <i class="fa fa-copy"></i> Copy Command
@@ -1549,10 +1375,10 @@ function generateFilebeatCommand() {
     var url = $('#filebeat-es-url').val() || 'https://your-elasticsearch:9200';
     var username = $('#filebeat-username').val() || 'your-username';
     var password = $('#filebeat-password').val() || 'your-password';
-    var device = $('#filebeat-device').val() || 'dragon-os-box';
+    var device = $('#filebeat-device').val() || 'forgedfate-device';
     var prefix = $('#filebeat-prefix').val() || 'kismet';
 
-    var command = `sudo python3 filebeat_integration.py ` +
+    var command = `sudo python3 /path/to/kismet/filebeat_integration.py ` +
                  `--elasticsearch-url "${url}" ` +
                  `--username "${username}" ` +
                  `--password "${password}" ` +
@@ -1585,31 +1411,6 @@ function downloadFilebeatScript() {
     a.click();
     document.body.removeChild(a);
 }
-
-// Monitor export activity
-function monitorExportActivity() {
-    // Check for active exports and update status
-    for (var export_type in export_configs) {
-        if (export_configs[export_type].enabled) {
-            // Update status to show export is active
-            updateExportStatus(export_type, true, {
-                documents_sent: export_status[export_type].documents_sent + Math.floor(Math.random() * 10),
-                errors: export_status[export_type].errors
-            });
-        } else {
-            updateExportStatus(export_type, false);
-        }
-    }
-}
-
-// Initialize monitoring when document is ready
-$(document).ready(function() {
-    // Monitor export activity every 10 seconds
-    setInterval(monitorExportActivity, 10000);
-
-    // Initial status update
-    setTimeout(monitorExportActivity, 2000);
-});
 
 // We're done loading
 exports.load_complete = 1;
