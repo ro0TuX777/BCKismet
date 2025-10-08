@@ -1,0 +1,6 @@
+# BU-353 S4 GPS USB Dongle (Prolific PL2303)
+# Creates stable /dev/gps0 symlink for the GPS device
+SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ATTRS{product}=="USB-Serial Controller", SYMLINK+="gps0", GROUP="dialout", MODE="0664"
+
+# Alternative rule if product string varies
+SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", SYMLINK+="gps0", GROUP="dialout", MODE="0664"

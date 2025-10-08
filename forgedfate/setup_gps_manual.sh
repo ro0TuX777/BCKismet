@@ -1,0 +1,77 @@
+#!/bin/bash
+# Manual GPS Setup Instructions
+# Run these commands one by one with sudo
+
+echo "=================================================="
+echo "    ForgedFate GPS Manual Setup Instructions"
+echo "=================================================="
+echo
+echo "Please run these commands manually with sudo:"
+echo
+echo "1. Install GPS packages:"
+echo "   sudo apt update"
+echo "   sudo apt install -y gpsd gpsd-clients python3-gps"
+echo
+echo "2. Copy udev rule:"
+echo "   sudo cp 99-gps-bu353s4.rules /etc/udev/rules.d/"
+echo
+echo "3. Reload udev rules:"
+echo "   sudo udevadm control --reload-rules"
+echo "   sudo udevadm trigger"
+echo
+echo "4. Configure gpsd:"
+echo "   sudo tee /etc/default/gpsd > /dev/null << 'EOF'"
+echo "# Default settings for the gpsd init script and the hotplug wrapper."
+echo ""
+echo "# Start the gpsd daemon automatically at boot time"
+echo "START_DAEMON=\"true\""
+echo ""
+echo "# Use USB hotplugging to add new USB devices automatically to the daemon"
+echo "USBAUTO=\"true\""
+echo ""
+echo "# Devices gpsd should collect to at boot time."
+echo "DEVICES=\"/dev/gps0\""
+echo ""
+echo "# Other options you want to pass to gpsd"
+echo "GPSD_OPTIONS=\"-n -b\""
+echo ""
+echo "# Automatically hot add/remove USB GPS devices via gpsdctl"
+echo "GPSD_SOCKET=\"/var/run/gpsd.sock\""
+echo "EOF"
+echo
+echo "5. Create systemd override:"
+echo "   sudo mkdir -p /etc/systemd/system/gpsd.service.d"
+echo "   sudo tee /etc/systemd/system/gpsd.service.d/override.conf > /dev/null << 'EOF'"
+echo "[Unit]"
+echo "# Ensure GPS device is available before starting"
+echo "After=dev-gps0.device"
+echo "Wants=dev-gps0.device"
+echo ""
+echo "[Service]"
+echo "# Restart on failure"
+echo "Restart=on-failure"
+echo "RestartSec=5"
+echo ""
+echo "# Environment variables"
+echo "Environment=\"GPSD_OPTIONS=-n -b\""
+echo "Environment=\"GPSD_SOCKET=/var/run/gpsd.sock\""
+echo ""
+echo "# Start gpsd with proper options"
+echo "ExecStart="
+echo "ExecStart=/usr/sbin/gpsd -N -n -b /dev/gps0"
+echo "EOF"
+echo
+echo "6. Enable and start services:"
+echo "   sudo systemctl daemon-reload"
+echo "   sudo systemctl enable gpsd"
+echo "   sudo systemctl enable gpsd.socket"
+echo "   sudo systemctl start gpsd.socket"
+echo "   sudo systemctl start gpsd"
+echo
+echo "7. Check if /dev/gps0 exists:"
+echo "   ls -la /dev/gps0"
+echo
+echo "8. Test GPS functionality:"
+echo "   ./gps_health_check.sh"
+echo
+echo "=================================================="

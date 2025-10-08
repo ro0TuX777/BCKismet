@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ForgedKismet
+Comment=ForgedFate - Enhanced Kismet Wireless Network Detector
+Exec=/home/dragos/Downloads/kismet/forgedkismet-wrapper.sh /home/dragos/Downloads/kismet/forgedfate/kismet_minimal.conf
+Icon=/home/dragos/Downloads/kismet/forgedfate/ForgedKismet.png
+Terminal=false
+Categories=Network;
+Keywords=wireless;network;security;monitoring;kismet;wifi;bluetooth;
+StartupNotify=true
+StartupWMClass=kismet
+MimeType=application/x-kismet;
