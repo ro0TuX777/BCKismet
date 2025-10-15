@@ -57,9 +57,9 @@ class KismetJSONExporter:
             # Build common device record
             device_record = {
                 "@timestamp": datetime.now().isoformat(),
-                "timestamp": datetime.fromtimestamp(last_time).isoformat() if last_time else None,
-                "first_seen": datetime.fromtimestamp(first_time).isoformat() if first_time else None,
-                "last_seen": datetime.fromtimestamp(last_time).isoformat() if last_time else None,
+                "timestamp": int(last_time) if last_time else None,
+                "first_seen": int(first_time) if first_time else None,
+                "last_seen": int(last_time) if last_time else None,
                 "device_key": devkey,
                 "phy_name": phyname,
                 "mac_address": devmac,
