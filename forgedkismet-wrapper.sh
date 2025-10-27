@@ -49,8 +49,48 @@ if [[ -z "$TERMINAL" ]]; then
     exit 1
 fi
 
+# Function to open web browser
+open_browser() {
+    local url="$1"
+    local browsers=(
+        "xdg-open"
+        "firefox"
+        "google-chrome"
+        "chromium"
+        "chromium-browser"
+        "opera"
+        "vivaldi"
+        "brave-browser"
+    )
+
+    for browser in "${browsers[@]}"; do
+        if command -v "$browser" &> /dev/null; then
+            echo "Opening web UI in browser: $browser"
+            "$browser" "$url" &> /dev/null &
+            return 0
+        fi
+    done
+
+    echo "Warning: No suitable web browser found to open $url"
+    echo "Please manually open your browser and navigate to: $url"
+    return 1
+}
+
 # Launch ForgedKismet in terminal
 echo "Launching ForgedKismet with configuration: $CONFIG_FILE"
 echo "Using terminal: $TERMINAL"
 
-exec $TERMINAL /usr/bin/kismet --config-file="$CONFIG_FILE"
+# Start Kismet in background
+$TERMINAL /usr/bin/kismet --config-file="$CONFIG_FILE" &
+KISMET_PID=$!
+
+# Wait a moment for Kismet to start up
+echo "Waiting for Kismet to start up..."
+sleep 3
+
+# Open the web UI
+echo "Opening Kismet Web UI..."
+open_browser "http://localhost:2501"
+
+# Keep the script running so the desktop icon doesn't disappear immediately
+wait $KISMET_PID
