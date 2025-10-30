@@ -1,0 +1,22 @@
+[Unit]
+Description=Kismet Wireless Sniffer with Auto-Enabled Data Sources
+After=network.target gpsd.service
+
+[Service]
+Type=simple
+User=dragos
+Group=dragos
+WorkingDirectory=/home/dragos/Downloads/kismet/forgedfate
+ExecStart=/usr/bin/kismet --override=/home/dragos/Downloads/kismet/forgedfate/kismet_site.conf --no-ncurses
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Allow Kismet to access network interfaces
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+
