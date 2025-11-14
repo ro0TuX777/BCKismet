@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ForgedKismet
+Comment=ForgedFate - Enhanced Kismet with GPS and Multi-Device Configuration
+Exec=/home/dragos/Downloads/kismet/forgedkismet-wrapper.sh /home/dragos/Downloads/kismet/forgedfate/kismet_working.conf
+Icon=/home/dragos/Downloads/kismet/forgedfate/ForgedKismet.png
+Terminal=false
+Categories=Network;
+Keywords=wireless;network;security;monitoring;kismet;wifi;bluetooth;gps;sdr;
+StartupNotify=true
+StartupWMClass=kismet
+MimeType=application/x-kismet;

@@ -1,175 +1,111 @@
-# Kismet - WiFi/Bluetooth Detection for RF-Kit
+# BCKismet
 
-Kismet wireless network detector integrated with RF-Kit for comprehensive WiFi and Bluetooth scanning.
+**Enhanced Kismet Wireless Network Detection Tool by Blue Cloak**
 
-## Overview
+BCKismet is a customized version of Kismet with enhanced GPS capabilities, custom branding, and improved data source management for wireless network detection and analysis.
 
-This directory contains Kismet configuration and data export tools for the RF-Kit system. Kismet scans for WiFi networks and Bluetooth devices, storing data in SQLite databases that are then exported to JSON for Elasticsearch ingestion.
+## 🚀 Features
 
-## Features
+- **GPS Integration**: Full GPSD integration with real-time location tracking
+- **Enhanced Web Interface**: Custom "Blue Cloak" branding with improved UX
+- **Data Source Management**: Fixed "Add Data Sources" functionality for easy WiFi/Bluetooth device addition
+- **Multi-Interface Support**: Support for USB WiFi adapters, internal WiFi, and Bluetooth devices
+- **Desktop Integration**: Desktop launcher with automatic terminal management
+- **Configuration Profiles**: Multiple configuration profiles (minimal and full working configs)
 
-- **WiFi Detection** - Comprehensive 802.11 network scanning
-- **Bluetooth Detection** - Bluetooth device discovery and tracking
-- **Database Export** - Convert Kismet SQLite databases to JSON
-- **Elasticsearch Integration** - Automatic data export via Filebeat
-- **Control Panel Integration** - Managed by RF-Kit control panel
+## 📋 Quick Start
 
-## Quick Start
+### Prerequisites
+- Linux system with Kismet installed
+- GPSD for GPS functionality
+- WiFi adapters and/or Bluetooth devices for capture
 
-### Using Control Panel (Recommended)
-
-```bash
-cd /home/dragos/rf-kit/control-panel
-python3 control-panel.py
-# Select Option 2 for Quick Scan (includes Kismet)
-# Select Option 9 to Export Kismet Data
-```
-
-### Manual Operation
-
-1. **Start Kismet:**
+### Installation
+1. Clone the repository:
    ```bash
-   sudo kismet --override=/home/dragos/Downloads/kismet/forgedfate/kismet_site.conf
+   git clone https://github.com/ro0TuX777/BCKismet.git
+   cd BCKismet
    ```
 
-2. **Export Kismet Database:**
+2. Make scripts executable:
    ```bash
-   cd /home/dragos/rf-kit/kismet
-   python3 kismet_to_json_exporter.py /path/to/database.kismet
+   chmod +x run-kismet.sh
+   chmod +x create-desktop-icon.sh
    ```
 
-## Configuration
+3. Run BCKismet:
+   ```bash
+   # For basic functionality (GPS + Web UI)
+   ./run-kismet.sh
 
-### Kismet Configuration File
+   # For full WiFi capture (requires root)
+   sudo ./run-kismet.sh
+   ```
 
-Location: `/home/dragos/Downloads/kismet/forgedfate/kismet_site.conf`
+4. Access the web interface:
+   - Open browser to http://localhost:2502
+   - Set up admin credentials on first run
+   - Navigate to Data Sources to add WiFi/Bluetooth interfaces
 
-**Key Settings:**
-```
-log_types=kismet
-log_title=Kismet
-log_prefix=/home/dragos/Downloads/kismet/forgedfate/logs/
-```
+## 🔧 Configuration Files
 
-### Data Export Configuration
+- `forgedfate/kismet_minimal.conf` - Minimal configuration for testing
+- `forgedfate/kismet_working.conf` - Full configuration with all features
+- `run-kismet.sh` - Command-line launcher script
+- `forgedkismet-wrapper.sh` - Desktop launcher wrapper
 
-Kismet databases are exported to JSON and ingested by Filebeat:
+## 📊 Supported Interfaces
 
-**Export Location:** `/home/dragos/rf-kit/logs/kismet/`
+### WiFi Interfaces
+- USB WiFi adapters (TP-Link, Realtek, MediaTek chipsets)
+- Internal WiFi cards
+- Monitor mode capable devices
 
-**Filebeat Paths:**
-- WiFi devices: `/home/dragos/rf-kit/logs/kismet/Kismet-*/wifi.devices.json`
-- Bluetooth devices: `/home/dragos/rf-kit/logs/kismet/Kismet-*/bluetooth.devices.json`
+### Bluetooth Interfaces
+- Internal Bluetooth adapters
+- USB Bluetooth dongles
+- HCI-compatible devices
 
-**Elasticsearch Index:** `kismet-sdr-default`
+### GPS
+- GPSD integration (recommended)
+- Serial GPS devices
+- USB GPS modules
 
-## Data Flow
+## 🎯 Key Improvements
 
-```
-Kismet Scan
-    ↓
-SQLite Database (.kismet file)
-    ↓
-kismet_to_json_exporter.py
-    ↓
-JSON Files (wifi.devices.json, bluetooth.devices.json)
-    ↓
-Filebeat
-    ↓
-Elasticsearch (kismet-sdr-default index)
-    ↓
-Kibana Dashboard
-```
+### Fixed Issues
+- ✅ GPS driver configuration (now uses proper GPSD integration)
+- ✅ Helper binary path corrections
+- ✅ Data source driver type specifications
+- ✅ Web interface branding and functionality
+- ✅ Plugin directory error resolution
 
-## Files
+### Enhanced Features
+- 🔧 Improved "Add Data Sources" functionality
+- 🎨 Custom Blue Cloak branding
+- 📱 Desktop integration with launcher
+- 📍 Real-time GPS tracking
+- 🔍 Enhanced interface detection
 
-### kismet_to_json_exporter.py
+## 📖 Documentation
 
-Exports Kismet SQLite databases to JSON format for Elasticsearch ingestion.
+- `QUICK_START_GUIDE.md` - Comprehensive setup and usage guide
+- `DESKTOP_ICON_CREATION_GUIDE.md` - Desktop integration instructions
+- Configuration examples and troubleshooting tips included
 
-**Usage:**
-```bash
-python3 kismet_to_json_exporter.py /path/to/database.kismet
-```
+## 🤝 Contributing
 
-**Output:**
-- Creates directory: `/home/dragos/rf-kit/logs/kismet/Kismet-YYYYMMDD-HH-MM-SS-N/`
-- Exports `wifi.devices.json` - WiFi access points and clients
-- Exports `bluetooth.devices.json` - Bluetooth devices
+This project is based on the Kismet wireless network detector. Contributions and improvements are welcome.
 
-**Features:**
-- Extracts device information (MAC, SSID, manufacturer, signal strength)
-- Converts timestamps to Unix format for Elasticsearch
-- Handles both WiFi and Bluetooth devices
-- Automatic Filebeat ingestion
+## 📄 License
 
-### Configuration Files
+Based on Kismet - see original Kismet licensing terms.
 
-- `forgedfate/kismet_site.conf` - Main Kismet configuration
-- `kismet/` - Kismet source code (ForgedFate fork)
+## 🔗 Links
 
-## Directory Structure
+- Original Kismet: https://www.kismetwireless.net/
+- Documentation: See included guides and configuration files
 
-```
-kismet/
-├── kismet_to_json_exporter.py   # Database export tool
-├── forgedfate/                  # Kismet configuration
-│   ├── kismet_site.conf         # Main config file
-│   └── logs/                    # Kismet database output
-├── kismet/                      # Kismet source (ForgedFate)
-│   ├── capture_linux_bluetooth/
-│   ├── examples/
-│   ├── kaitai/
-│   └── README.md
-└── README.md                    # This file
-└── README.md                    # This file
-```
+---
 
-## Troubleshooting
-
-### Kismet Not Creating Database Files
-
-**Problem:** Kismet runs but no `.kismet` files are created
-
-**Solution:** Check `log_types` and `log_title` in `kismet_site.conf`:
-```
-log_types=kismet
-log_title=Kismet
-```
-
-### Data Not Appearing in Elasticsearch
-
-**Problem:** JSON files exported but not in Elasticsearch
-
-**Solution:**
-1. Check timestamp format (must be Unix timestamps, not ISO strings)
-2. Restart Filebeat: `sudo systemctl restart filebeat`
-3. Verify Filebeat is watching correct paths
-4. Check Filebeat logs: `journalctl -u filebeat -n 50`
-
-### Permission Denied
-
-**Problem:** Cannot start Kismet
-
-**Solution:** Run with sudo: `sudo kismet`
-
-## Web Interface
-
-When Kismet is running, access the web interface at:
-- **URL:** http://localhost:2501
-- **Features:** Live device tracking, network visualization, packet capture
-
-## Integration with RF-Kit
-
-Kismet is fully integrated with the RF-Kit control panel:
-- Automatically started/stopped during scans
-- Data exported to Elasticsearch
-- Monitored in unified dashboard
-- Logs accessible from control panel
-
-For more information, see the [Control Panel README](../control-panel/README.md).
-
-## References
-
-- **Official Kismet Documentation:** https://www.kismetwireless.net/docs/
-- **ForgedFate Project:** Based on enhanced Kismet fork with export capabilities
+**Powered by Blue Cloak** 🛡️

@@ -665,10 +665,10 @@ function update_datasource2(data) {
                     style: 'font-size: 0.9em; color: #666; margin: 10px 0; background: #f5f5f5; padding: 8px; border-radius: 4px;'
                 })
                 .html('<strong>Examples:</strong><br>' +
-                      '• GPS: <code>gpsnmea:/dev/ttyACM0:baud=9600:name=GPS-UBlox</code><br>' +
-                      '• GPS (38400): <code>gpsnmea:/dev/ttyACM0:baud=38400:name=GPS-UBlox</code><br>' +
-                      '• WiFi: <code>wlan1:name=External-WiFi</code><br>' +
-                      '• Bluetooth: <code>hci1:name=External-BT</code>')
+                      '• WiFi: <code>wlx8c902da2e062:name=External-WiFi:type=linuxwifi</code><br>' +
+                      '• WiFi (simple): <code>wlan1:name=Internal-WiFi</code><br>' +
+                      '• Bluetooth: <code>hci0:name=Bluetooth:type=linuxbluetooth</code><br>' +
+                      '• GPS: <code>gpsd:host=localhost,port=2947:name=GPS</code>')
             )
             .append(
                 $('<button>', {

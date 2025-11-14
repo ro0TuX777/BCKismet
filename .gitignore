@@ -1,0 +1,57 @@
+# BCKismet .gitignore
+
+# Kismet database files
+*.kismet
+*.kismet-journal
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.o
+*.so
+*.a
+
+# Configuration backups
+*.conf.bak
+*.conf.orig
+
+# Desktop launcher temporary files
+/tmp/kismet-launch-*.sh
+
+# Kismet runtime files
+kismet_httpd.conf
+kismet_memory.conf
+kismet_alerts.conf
+kismet_manuf.txt.gz
+
+# Python cache
+*.pyc
+__pycache__/
+
+# Backup files
+*~
+*.bak
+*.orig
