@@ -91,11 +91,15 @@ BCKismet is a customized version of Kismet with enhanced GPS capabilities, custo
 
 - `QUICK_START_GUIDE.md` - Comprehensive setup and usage guide
 - `DESKTOP_ICON_CREATION_GUIDE.md` - Desktop integration instructions
+- `GITHUB_WORKFLOW_GUIDE.md` - Complete GitHub workflow for developers
+- `GITHUB_QUICK_REFERENCE.md` - Quick commands and safety checks
 - Configuration examples and troubleshooting tips included
 
 ## 🤝 Contributing
 
 This project is based on the Kismet wireless network detector. Contributions and improvements are welcome.
+
+**For Developers**: Please review `GITHUB_WORKFLOW_GUIDE.md` before making contributions to ensure proper workflow and prevent large file issues.
 
 ## 📄 License
 
