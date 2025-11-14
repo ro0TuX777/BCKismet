@@ -1,67 +1,167 @@
 # BCKismet .gitignore
+# Reference: GITHUB_WORKFLOW_GUIDE.md for complete workflow
 
-# Kismet database files
+# ========================================
+# CRITICAL: Large Files (GitHub 100MB limit)
+# ========================================
+# NEVER COMMIT THESE FILES - They exceed GitHub's file size limits
+kismet_data.json
+forgedfate/kismet/kismet_data.json
 *.kismet
 *.kismet-journal
 
-# Large Kismet data files
-kismet_data.json
+# Large data files (with exceptions for necessary JS/JSON files)
+*.json
+!forgedfate/kismet/http_data/js/*.js
+!package.json
+!*.config.json
 *.json.gz
-forgedfate/kismet/kismet_data.json
+*.db
+*.sqlite
+*.sqlite3
 
+# ========================================
+# Development Environment
+# ========================================
 # Python virtual environment
 .venv/
+venv/
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================================
+# Runtime and Temporary Files
+# ========================================
 # Log files
 *.log
 logs/
+*.log.*
 
 # Temporary files
 *.tmp
 *.temp
 *~
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Build artifacts
-*.o
-*.so
-*.a
-
-# Configuration backups
-*.conf.bak
-*.conf.orig
+.#*
+#*#
 
 # Desktop launcher temporary files
 /tmp/kismet-launch-*.sh
+/tmp/forgedkismet-*
 
 # Kismet runtime files
 kismet_httpd.conf
 kismet_memory.conf
 kismet_alerts.conf
 kismet_manuf.txt.gz
+.kismet/
 
-# Python cache
-*.pyc
-__pycache__/
+# ========================================
+# IDE and Editor Files
+# ========================================
+# Visual Studio Code
+.vscode/
+*.code-workspace
 
-# Backup files
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim/Neovim
+*.swp
+*.swo
+*.swn
 *~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ========================================
+# Operating System Files
+# ========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ========================================
+# Build and Compilation Artifacts
+# ========================================
+*.o
+*.so
+*.a
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# ========================================
+# Backup and Archive Files
+# ========================================
 *.bak
 *.orig
+*.rej
+*.backup
+*.old
+*.save
 
-# Large data files (GitHub 100MB limit)
-*.json
-!forgedfate/kismet/http_data/js/*.js
-!package.json
+# Configuration backups
+*.conf.bak
+*.conf.orig
+*.conf.backup
+
+# ========================================
+# Version Control
+# ========================================
+# Git filter-branch backup
+.git/refs/original/
+
+# ========================================
+# Project Specific Exclusions
+# ========================================
+# Kismet capture files and databases
+capture_*
+*.pcap
+*.pcapng
+
+# Large export files
+export/
+exports/
+*.csv
+*.xlsx
+
+# Test data
+test_data/
+sample_data/
