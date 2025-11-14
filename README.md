@@ -89,10 +89,20 @@ BCKismet is a customized version of Kismet with enhanced GPS capabilities, custo
 
 ## 📖 Documentation
 
+### **User Guides**
 - `QUICK_START_GUIDE.md` - Comprehensive setup and usage guide
 - `DESKTOP_ICON_CREATION_GUIDE.md` - Desktop integration instructions
+
+### **Developer Workflow**
 - `GITHUB_WORKFLOW_GUIDE.md` - Complete GitHub workflow for developers
 - `GITHUB_QUICK_REFERENCE.md` - Quick commands and safety checks
+
+### **AI Dev Templates**
+- `AI_DEV_GITHUB_PUSH_TEMPLATE.md` - Template for pushing apps to GitHub
+- `AI_DEV_PUSH_CHECKLIST.md` - Step-by-step checklist for repository setup
+- `AI_DEV_INSTRUCTIONS.md` - Specific instructions for multi-app deployment
+
+### **Additional Resources**
 - Configuration examples and troubleshooting tips included
 
 ## 🤝 Contributing
