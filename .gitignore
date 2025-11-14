@@ -4,6 +4,11 @@
 *.kismet
 *.kismet-journal
 
+# Large Kismet data files
+kismet_data.json
+*.json.gz
+forgedfate/kismet/kismet_data.json
+
 # Python virtual environment
 .venv/
 __pycache__/
@@ -55,3 +60,8 @@ __pycache__/
 *~
 *.bak
 *.orig
+
+# Large data files (GitHub 100MB limit)
+*.json
+!forgedfate/kismet/http_data/js/*.js
+!package.json
